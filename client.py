@@ -33,7 +33,7 @@ class Client (object):
         for line in item:
             if item != "<h2>" or item != "<\h2>":
                 goal = line
-        return line.replace("\t", "")
+        return goal.replace("\t", "")
 
     def main(self):
         htmlWebPag = self.getWeb('https://www.packtpub.com/packt/offers/free-learning/')
