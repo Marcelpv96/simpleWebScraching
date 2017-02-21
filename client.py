@@ -7,6 +7,7 @@ download by the webpage: https://www.packtpub.com/packt/offers/free-learning/
 
 @author: marcelpv96@marcelpv96.com
 '''
+import bs4
 import urllib2
 
 
@@ -23,15 +24,23 @@ class Client (object):
 
     def getData(self, htmlPage):
         """
-        L'unic que ens interesara sera el html amb l'etiqueta  dotd-title
+        L'unic que ens interessa es el que trobem dins la classe amb l'etiqueta
+        dotd-title, podem parsejar el html amb BeautifulSoup.
         """
-        pass
+        bs = bs4.BeautifulSoup(htmlPage, "lxml")
+        items = bs.find("div", "dotd-title")
+        item = bs.find("h2")
+        for line in item:
+            if item != "<h2>" or item != "<\h2>":
+                goal = line
+        return line.replace("\t", "")
 
     def main(self):
-        htmlBeforeParse = self.getWeb('https://www.packtpub.com/packt/offers/free-learning/')
-        data = self.getData(htmlBeforeParse)
-        return data
+        htmlWebPag = self.getWeb('https://www.packtpub.com/packt/offers/free-learning/')
+        return "Today the avaible book is:"+self.getData(htmlWebPag)
+
 
 if __name__ == "__main__":
     client = Client()
-    print client.main()
+    avaibleBook = client.main()
+    print avaibleBook
