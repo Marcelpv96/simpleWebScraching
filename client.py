@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 # vim: set fileencoding=utf8 :
 '''
-Simple python application for download the title of free books that we can
+Simple python application for obatain the title of free books that we can
 download by the webpage: https://www.packtpub.com/packt/offers/free-learning/
 
 @author: marcelpv96@marcelpv96.com
 '''
 import bs4
 import urllib2
-
+import telebot
 
 class Client (object):
     def getWeb(self, webPage):
@@ -35,12 +35,20 @@ class Client (object):
                 goal = line
         return goal.replace("\t", "")
 
+    def send_telegram(self, message):
+        """
+        Enviar un missatge via telegram utilitzant un bot.
+        """
+        bot_id = "338150385:AAEzsfua9rUEp6l3zExAsdiC8kyE0OcouK4"
+        bot = telebot.TeleBot(bot_id)
+        bot.send_message(333932412,message)
+
     def main(self):
         htmlWebPag = self.getWeb('https://www.packtpub.com/packt/offers/free-learning/')
-        return "Today the avaible book is:"+self.getData(htmlWebPag)
+        message = "Today the avaible book is:"+self.getData(htmlWebPag)
+        self.send_telegram(message)
 
 
 if __name__ == "__main__":
     client = Client()
     avaibleBook = client.main()
-    print avaibleBook
