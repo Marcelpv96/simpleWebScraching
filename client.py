@@ -10,6 +10,7 @@ download by the webpage: https://www.packtpub.com/packt/offers/free-learning/
 import bs4
 import urllib2
 import telebot
+import sys
 
 class Client (object):
     def getWeb(self, webPage):
@@ -27,13 +28,10 @@ class Client (object):
         L'unic que ens interessa es el que trobem dins la classe amb l'etiqueta
         dotd-title, podem parsejar el html amb BeautifulSoup.
         """
+        # lxml
         bs = bs4.BeautifulSoup(htmlPage, "lxml")
-        items = bs.find("div", "dotd-title")
-        item = bs.find("h2")
-        for line in item:
-            if item != "<h2>" or item != "<\h2>":
-                goal = line
-        return goal.replace("\t", "")
+        items = bs.find("div", "dotd-title").find("h2").text
+        return items.replace("\t", "")
 
     def send_telegram(self, message):
         """
