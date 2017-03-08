@@ -12,7 +12,12 @@ import urllib2
 import telebot
 import sys
 
+
 class Client (object):
+    def __init__(self, telegramID=None, botID=None):
+        self.telegramID = telegramID
+        self.botID = botID
+
     def getWeb(self, webPage):
         """
         Obrir web -> urllib2 podem obrir una web i descarregar tot el html que
@@ -30,23 +35,32 @@ class Client (object):
         """
         # lxml
         bs = bs4.BeautifulSoup(htmlPage, "lxml")
-        items = bs.find("div", "dotd-title").find("h2").text
-        return items.replace("\t", "")
+        goal = bs.find("div", "dotd-title").find("h2").text
+        return goal.replace("\t", "")
 
     def send_telegram(self, message):
         """
-        Enviar un missatge via telegram utilitzant un bot.
+        Enviar un missatge via telegram a una id utilitzant un bot
         """
-        bot_id = "338150385:AAEzsfua9rUEp6l3zExAsdiC8kyE0OcouK4"
-        bot = telebot.TeleBot(bot_id)
-        bot.send_message(333932412,message)
+        bot = telebot.TeleBot(self.botID)
+        bot.send_message(self.telegramID, message)
 
     def main(self):
-        htmlWebPag = self.getWeb('https://www.packtpub.com/packt/offers/free-learning/')
-        message = "Today the avaible book is:"+self.getData(htmlWebPag)
-        self.send_telegram(message)
+        htmlWebPag = self.getWeb(
+            'https://www.packtpub.com/packt/offers/free-learning/')
+        message = "Today the avaible book is:" + self.getData(htmlWebPag)
+        if self.telegramID and self.botID is not None:
+            self.send_telegram(message)
+        else:
+            print message
 
 
 if __name__ == "__main__":
-    client = Client()
-    avaibleBook = client.main()
+    if len(sys.argv) == 3:
+        client = Client(int(sys.argv[1]), sys.argv[2])
+    elif len(sys.argv) == 1:
+        client = Client()
+    else:
+        print "Ús: client.py or client.py < TelegramID > <BotID >"
+        sys.exit(-1)
+    client.main()
